@@ -16,21 +16,28 @@ download.file(
 
 cat("Saved births file to", births_dest, "\n")
 
-## 2. Download population files, 2010–2024 ------------------------
+## 2. Download population files, 2013–2024 ------------------------
 
-years <- 2010:2024
+years <- 2013:2024
 
 for (yr in years) {
-  # For 2022 and before: only look for XLS
-  # For 2023 and after: only look for XLSX
-  ext <- if (yr <= 2022) "xls" else "xlsx"
-  
-  base_url <- sprintf(
-    "https://www.cbs.gov.il/he/publications/doclib/%d/2.shnatonpopulation/st02_19x",
-    yr
-  )
-  
-  url  <- sprintf("%s.%s", base_url, ext)
+    
+  if (yr == 2014) {
+    url  <- "https://www.cbs.gov.il/he/publications/DocLib/2014/ShnatonPopulation/pdf/st02_19x.pdf"
+    ext  <- "pdf"
+  } else if (yr == 2016) {
+    url  <- "https://www.cbs.gov.il/he/publications/doclib/2016/2.shnatonpopulation/st02_19x.pdf"
+    ext  <- "pdf"
+  } else if (yr <= 2018) {
+    base_url <- sprintf(
+      "https://www.cbs.gov.il/he/publications/doclib/%d/2.%%20shnatonpopulation/st02_19x",
+      yr
+    )
+    ext  <- "xls"
+    url  <- paste0(base_url, ".", ext)
+  }
+
+  url  <- paste0(base_url, ".", ext)
   dest <- sprintf("data/population_%d.%s", yr, ext)
   
   res <- try(
